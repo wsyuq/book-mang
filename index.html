@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>書籍データベース</title>
+
+    <!-- アプリ用アイコン（本のデザイン） -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%234f46e5'/%3E%3Cpath d='M20 32C35 27 45 34 50 37C55 34 65 27 80 32V72C65 67 55 74 50 77C45 74 35 67 20 72Z' fill='%23ffffff'/%3E%3Cpath d='M50 37V77' stroke='%234f46e5' stroke-width='3'/%3E%3Cpath d='M50 37V58L55 54L60 58V34' fill='%23ef4444'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%234f46e5'/%3E%3Cpath d='M20 32C35 27 45 34 50 37C55 34 65 27 80 32V72C65 67 55 74 50 77C45 74 35 67 20 72Z' fill='%23ffffff'/%3E%3Cpath d='M50 37V77' stroke='%234f46e5' stroke-width='3'/%3E%3Cpath d='M50 37V58L55 54L60 58V34' fill='%23ef4444'/%3E%3C/svg%3E">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-title" content="書籍データベース">
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- ヘッダーエリア -->
+        <div class="header-area">
+            <h1>書籍データベース</h1>
+            <button id="open-data-modal-btn" class="gear-btn" aria-label="設定・ツール">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="lists-container">
+            <!-- 未読リスト -->
+            <div class="list-section" id="unread-section">
+                <h2>未読リスト</h2>
+                
+                <!-- 未読追加フォーム & 昇降順ボタン -->
+                <div class="add-form">
+                    <input type="text" id="unread-title" placeholder="未読の本を入力">
+                    <button id="add-unread-btn">追加</button>
+                    <button id="reverse-unread-btn" class="icon-btn" title="昇降順を入れ替え">⇅</button>
+                </div>
+                
+                <ul id="unread-list"></ul>
+            </div>
+
+            <!-- 読了リスト -->
+            <div class="list-section" id="read-section">
+                <h2>読了リスト</h2>
+                
+                <!-- 読了追加フォーム -->
+                <div class="add-form">
+                    <input type="text" id="read-title" placeholder="読了した本を入力">
+                    <button id="add-read-btn">追加</button>
+                    <input type="date" id="read-date-input" title="読了日">
+                </div>
+                
+                <ul id="read-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 編集用モーダル -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h3>情報の編集</h3>
+            <input type="text" id="edit-title" required>
+            <select id="edit-status">
+                <option value="unread">未読</option>
+                <option value="read">読了</option>
+            </select>
+            <input type="date" id="edit-date" style="display: none;">
+            <div class="modal-actions">
+                <button id="save-edit-btn">保存</button>
+                <button id="cancel-edit-btn" class="cancel-btn">キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 設定・ツール モーダル（検索・書き出し・復元） -->
+    <div id="data-modal" class="modal">
+        <div class="modal-content">
+            <h3>設定・ツール</h3>
+            
+            <div class="settings-group">
+                <label for="search-input">検索</label>
+                <input type="text" id="search-input" placeholder="タイトルで検索...">
+            </div>
+
+            <div class="settings-group">
+                <label>データ管理</label>
+                <div class="data-modal-actions">
+                    <button id="export-csv-btn" class="data-btn">CSV出力 (Excel用)</button>
+                    <button id="export-json-btn" class="data-btn">JSONバックアップ</button>
+                    <button id="import-json-btn" class="data-btn">JSON復元</button>
+                    <input type="file" id="import-json-file" accept=".json" style="display: none;">
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button id="close-data-modal-btn" class="cancel-btn">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- スマホでのドラッグ&ドロップを有効化するライブラリ -->
+    <script src="https://bernardo-castilho.github.io/DragDropTouch/DragDropTouch.js"></script>
+    <script src="script.js"></script>
+
+    <!-- サービスワーカーの登録 -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker Registered'))
+                    .catch(err => console.error('Service Worker Registration Failed', err));
+            });
+        }
+    </script>
+</body>
+</html>

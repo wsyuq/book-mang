@@ -1,0 +1,16 @@
+{
+  "name": "書籍整理アプリ",
+  "short_name": "書籍整理",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%234f46e5'/%3E%3Cpath d='M20 32C35 27 45 34 50 37C55 34 65 27 80 32V72C65 67 55 74 50 77C45 74 35 67 20 72Z' fill='%23ffffff'/%3E%3Cpath d='M50 37V77' stroke='%234f46e5' stroke-width='3'/%3E%3Cpath d='M50 37V58L55 54L60 58V34' fill='%23ef4444'/%3E%3C/svg%3E",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
